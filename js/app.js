@@ -43,6 +43,7 @@ const City = function (data) {
   this.location = data.location;
   this.stations = ko.observableArray();
   this.markers = ko.observableArray();
+  this.lastClickedMarker = ko.observable();
   $.getJSON(this.api).done(res => {
     self.stations(res);
     self.stations().forEach(station => {
@@ -53,7 +54,9 @@ const City = function (data) {
       });
       marker.setVisible(false);
       marker.addListener('click', function () {
+        if (self.lastClickedMarker()) { self.lastClickedMarker().setAnimation(null); }
         populateInfoWindow(this, largeInfoWindow, self.availabilityApi, station.StationUID);
+        self.lastClickedMarker(this);
       });
       self.markers.push(marker);
     })
