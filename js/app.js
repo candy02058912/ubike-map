@@ -44,6 +44,7 @@ const City = function (data) {
   this.stations = ko.observableArray();
   this.markers = ko.observableArray();
   this.lastClickedMarker = ko.observable();
+  // Get stations data from api
   $.getJSON(this.api).done(res => {
     self.stations(res);
     self.stations().forEach(station => {
