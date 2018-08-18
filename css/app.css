@@ -1,0 +1,30 @@
+body {
+  padding-top: 56px;
+}
+
+.sidebar {
+  position: relative;
+  top: 0;
+  bottom: 0;
+  overflow-y: scroll;
+}
+
+.main {
+  min-height: calc(100vh - 56px);
+  max-height: calc(100vh - 56px);
+}
+
+@media screen and (max-width: 576px) {
+  .main {
+    min-height: 0;
+    max-height: none;
+  }
+  .sidebar {
+    position: static;
+    min-height: 100px;
+    height: 20vh;
+  }
+  .map {
+    height: calc(100vh - 56px - 20vh);
+  }
+}
