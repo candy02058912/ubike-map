@@ -19,7 +19,7 @@ function populateInfoWindow(marker, infoWindow, api, stationUid) {
         <p>Space for return: ${status.AvailableReturnBikes}</p> 
         </div>`);
         infoWindow.open(map, marker);
-    }).failed(err => alert('Could not retrieve information.'));
+    }).fail(err => alert('Could not retrieve information.'));
     }
 };
 
