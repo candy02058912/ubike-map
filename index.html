@@ -32,7 +32,7 @@
       <div class="col-xs-12 col-sm-5 col-md-4 col-lg-3 sidebar border-right border-light pt-3" data-bind="with: currentCity">
         <input class="form-control" type="search" placeholder="Search" aria-label="Search" data-bind="textInput: $root.query, valueUpdate: 'keyup'">
         <h2 data-bind="text: name"></h2>
-        <ul data-bind="foreach: $root.filteredStations">
+        <ul class="stations" data-bind="foreach: $root.filteredStations">
           <li data-bind="text: $data.StationName.En, click: $root.clickStation"></li>
         </ul>
       </div>

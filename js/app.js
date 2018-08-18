@@ -10,31 +10,32 @@ let map, largeInfoWindow;
  */
 function populateInfoWindow(marker, infoWindow, api, stationUid) {
   if (infoWindow.marker != marker) {
+    marker.setAnimation(google.maps.Animation.BOUNCE);
     $.getJSON(`${api}&$filter eq '${stationUid}'`).done(([status]) => {
       infoWindow.marker = marker;
-        infoWindow.setContent(`<div>
-        <h4>${marker.title}</h4>
+      infoWindow.setContent(`<div>
+        <h6>${marker.title}</h6>
         <p>Service <span class=${status.ServieAvailable === 1 ? 'text-success>Available' : 'text-danger>Unavailable'}</span></p>
         <p>Bikes for rent: ${status.AvailableRentBikes}</p>
         <p>Space for return: ${status.AvailableReturnBikes}</p> 
         </div>`);
-        infoWindow.open(map, marker);
+      infoWindow.open(map, marker);
     }).fail(err => alert('Could not retrieve information.'));
-    }
+  }
 };
 
 function initMap() {
   // Constructor creates a new map - only center and zoom are required.
   map = new google.maps.Map(document.getElementById('map'), {
     // Initial center at New Taipei City
-    center: {lat: 24.9875278, lng: 121.3645979},
+    center: { lat: 24.9875278, lng: 121.3645979 },
     zoom: 11
   });
   largeInfoWindow = new google.maps.InfoWindow();
 
 }
 
-const City = function(data) {
+const City = function (data) {
   const self = this;
   this.name = data.name;
   this.api = data.api;
@@ -46,12 +47,12 @@ const City = function(data) {
     self.stations(res);
     self.stations().forEach(station => {
       const marker = new google.maps.Marker({
-        position: {lat: station.StationPosition.PositionLat, lng: station.StationPosition.PositionLon},
+        position: { lat: station.StationPosition.PositionLat, lng: station.StationPosition.PositionLon },
         map: map,
         title: station.StationName.En,
       });
       marker.setVisible(false);
-      marker.addListener('click', function() {
+      marker.addListener('click', function () {
         populateInfoWindow(this, largeInfoWindow, self.availabilityApi, station.StationUID);
       });
       self.markers.push(marker);
@@ -59,7 +60,7 @@ const City = function(data) {
   }).fail(err => alert('Could not retrive information'));
 };
 
-const ViewModel = function() {
+const ViewModel = function () {
   const self = this;
   // Search query
   this.query = ko.observable('');
@@ -71,7 +72,7 @@ const ViewModel = function() {
   // Current city user is viewing
   this.currentCity = ko.observable(this.cities()[0]);
   // Set city to user's selection
-  this.setCity = function(clickedCity) {
+  this.setCity = function (clickedCity) {
     // Remove old city markers
     const prevMarkers = self.currentCity().markers();
     prevMarkers.forEach(marker => marker.setVisible(false));
@@ -82,19 +83,19 @@ const ViewModel = function() {
     self.query('');
   };
 
-  this.filteredStations = ko.computed(function() {
+  this.filteredStations = ko.computed(function () {
     const stations = self.currentCity().stations();
     const markers = self.currentCity().markers();
     const results = stations.filter((station, idx) => {
       const isMatched = station.StationName.En.toLowerCase().includes(self.query().toLowerCase());
       if (markers[idx]) { markers[idx].setVisible(isMatched); }
-      if(isMatched) { return true; }
+      if (isMatched) { return true; }
       largeInfoWindow.close();
     });
     return results;
   }, this);
   // Show info window when click on station name in sidebar
-  this.clickStation = function(clickedStation) {
+  this.clickStation = function (clickedStation) {
     const stations = self.currentCity().stations();
     const markers = self.currentCity().markers();
     stations.forEach((station, idx) => {
@@ -104,7 +105,7 @@ const ViewModel = function() {
       }
     });
   }
-  
+
 };
 
 ko.applyBindings(new ViewModel());

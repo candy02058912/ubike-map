@@ -14,6 +14,19 @@ body {
   max-height: calc(100vh - 56px);
 }
 
+.stations {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.stations > li {
+  border: 2px solid;
+  margin-bottom: 2px;
+  padding: 2px 4px;
+  cursor: pointer;
+}
+
 @media screen and (max-width: 576px) {
   .main {
     min-height: 0;
