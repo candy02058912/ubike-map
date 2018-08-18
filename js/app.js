@@ -1,5 +1,12 @@
 let map;
 
+function populateInfoWindow(marker, infoWindow) {
+  if (infoWindow.marker != marker) {
+    infoWindow.marker = marker;
+    infoWindow.setContent(marker.title);
+    infoWindow.open(map, marker);
+  }
+};
 function initMap() {
   // Constructor creates a new map - only center and zoom are required.
   map = new google.maps.Map(document.getElementById('map'), {
@@ -7,7 +14,7 @@ function initMap() {
     center: {lat: 24.9875278, lng: 121.3645979},
     zoom: 11
   });
-
+  largeInfowindow = new google.maps.InfoWindow();
 
 }
 
@@ -28,7 +35,7 @@ const City = function(data) {
       });
       marker.setVisible(false);
       marker.addListener('click', function() {
-        console.log('hi');
+        populateInfoWindow(this, largeInfowindow);
       });
       self.markers.push(marker);
     })
@@ -48,6 +55,12 @@ const ViewModel = function() {
   this.currentCity = ko.observable(this.cities()[0]);
 
   this.setCity = function(clickedCity) {
+    // Remove old city markers
+    const prevMarkers = self.currentCity().markers();
+    prevMarkers.forEach(marker => marker.setVisible(false));
+    // Close info window
+    largeInfowindow.close();
+    // Set current city to the clicked city
     self.currentCity(clickedCity);
     self.query('');
   };
@@ -63,8 +76,15 @@ const ViewModel = function() {
     return results;
   }, this);
 
-  this.clickStation = function(e) {
-    console.log(e);
+  this.clickStation = function(clickedStation) {
+    const stations = self.currentCity().stations();
+    const markers = self.currentCity().markers();
+    stations.forEach((station, idx) => {
+      const isMatched = station.StationName.En.toLowerCase().includes(clickedStation.StationName.En.toLowerCase());
+      if (isMatched) {
+        google.maps.event.trigger(markers[idx], 'click');
+      }
+    });
   }
   
 };
