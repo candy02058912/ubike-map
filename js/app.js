@@ -35,6 +35,10 @@ function initMap() {
 
 }
 
+function mapError() {
+  alert('Could not retrieve map!');
+}
+
 const City = function (data) {
   const self = this;
   this.name = data.name;
